@@ -73,16 +73,16 @@ v3.0 [PROTOTYPE]
 #define PIN_LEDSTRIP_LOW 5
 
 #define PIN_EQ_RESET A3
-#define OUT_EQ_STROBE A1
-#define IN_EQ A2
+#define PIN_EQ_STROBE A1
+#define PIN_EQ_OUT A2
 
-#define IN_ADJ A0
+#define PIN_ADJ A0
 
 // LED1 = green, LED2 = red
-#define OUT_LED1 10
-#define OUT_LED2 11
-#define IN_BTN1 7
-#define IN_BTN2 8
+#define PIN_LED1 10
+#define PIN_LED2 11
+#define PIN_BTN1 7
+#define PIN_BTN2 8
 
 
 
@@ -230,23 +230,23 @@ void setup()
     pinMode(PIN_LEDSTRIP_LOW, OUTPUT);
     
     pinMode(PIN_EQ_RESET, OUTPUT);
-    pinMode(OUT_EQ_STROBE, OUTPUT);
-    pinMode(IN_EQ, INPUT);
-    pinMode(IN_ADJ, INPUT);
+    pinMode(PIN_EQ_STROBE, OUTPUT);
+    pinMode(PIN_EQ_OUT, INPUT);
+    pinMode(PIN_ADJ, INPUT);
     
-    pinMode(OUT_LED1, OUTPUT);
-    pinMode(OUT_LED2, OUTPUT);
-    pinMode(IN_BTN1, INPUT);
-    pinMode(IN_BTN2, INPUT);
+    pinMode(PIN_LED1, OUTPUT);
+    pinMode(PIN_LED2, OUTPUT);
+    pinMode(PIN_BTN1, INPUT);
+    pinMode(PIN_BTN2, INPUT);
     
     // Set initial output values
     analogWrite(PIN_LEDSTRIP_HIGH, 0);
     analogWrite(PIN_LEDSTRIP_MED, 0);
     analogWrite(PIN_LEDSTRIP_LOW, 0);
-    analogWrite(OUT_LED1, 0);
-    analogWrite(OUT_LED2, 0);
+    analogWrite(PIN_LED1, 0);
+    analogWrite(PIN_LED2, 0);
     digitalWrite(PIN_EQ_RESET, LOW);
-    digitalWrite(OUT_EQ_STROBE, HIGH);
+    digitalWrite(PIN_EQ_STROBE, HIGH);
     
     analogReference(DEFAULT); // 5V
     
@@ -268,13 +268,13 @@ void start()
         float x = (float)((millis() - start_time) % 500) / 250.0f;
         byte y = (byte)constrain(round(sin((x + 1.5f) * PI) * 127.5f + 127.5f), 0, 255);
         
-        analogWrite(OUT_LED1, y);
-        analogWrite(OUT_LED2, y);
+        analogWrite(PIN_LED1, y);
+        analogWrite(PIN_LED2, y);
     }
     while (millis() - start_time < 500);
     
-    analogWrite(OUT_LED1, 0);
-    analogWrite(OUT_LED2, 0);
+    analogWrite(PIN_LED1, 0);
+    analogWrite(PIN_LED2, 0);
 }
 
 
@@ -289,8 +289,8 @@ void loop()
         //
         // Program switch
         //
-        bool btn1 = digitalRead(IN_BTN1) == LOW;
-        bool btn2 = digitalRead(IN_BTN2) == LOW;
+        bool btn1 = digitalRead(PIN_BTN1) == LOW;
+        bool btn2 = digitalRead(PIN_BTN2) == LOW;
         
         // Long push / both buttons
         if (((btn1 && btn1 == btn1_last && time - btn1_LastPush > DUAL_PRESS) &&
@@ -305,25 +305,25 @@ void loop()
             // Flash LEDs to signal entering standby mode. LEDs remain lit until all buttons released
             for (int i = 0; i < 2; i++)
             {
-                digitalWrite(OUT_LED1, 0);
-                digitalWrite(OUT_LED2, 0);
+                digitalWrite(PIN_LED1, 0);
+                digitalWrite(PIN_LED2, 0);
                 delay(100);
-                digitalWrite(OUT_LED1, 255);
-                digitalWrite(OUT_LED2, 255);
+                digitalWrite(PIN_LED1, 255);
+                digitalWrite(PIN_LED2, 255);
                 delay(100);
             }
             
             // Wait for user to release all buttons
             do
             {
-                btn1 = digitalRead(IN_BTN1) == LOW;
-                btn2 = digitalRead(IN_BTN2) == LOW;
+                btn1 = digitalRead(PIN_BTN1) == LOW;
+                btn2 = digitalRead(PIN_BTN2) == LOW;
             }
             while(btn1 || btn2);
             
             // Turn off LEDs
-            digitalWrite(OUT_LED1, LOW);
-            digitalWrite(OUT_LED2, LOW);
+            digitalWrite(PIN_LED1, LOW);
+            digitalWrite(PIN_LED2, LOW);
             
             delay(1000);
             
@@ -335,8 +335,8 @@ void loop()
             // Wait for button press
             do
             {
-                btn1 = digitalRead(IN_BTN1) == LOW;
-                btn2 = digitalRead(IN_BTN2) == LOW;
+                btn1 = digitalRead(PIN_BTN1) == LOW;
+                btn2 = digitalRead(PIN_BTN2) == LOW;
             }
             while(!btn1 && !btn2);
             
@@ -350,8 +350,8 @@ void loop()
             // Wait for user to release all buttons
             do
             {
-                btn1 = digitalRead(IN_BTN1) == LOW;
-                btn2 = digitalRead(IN_BTN2) == LOW;
+                btn1 = digitalRead(PIN_BTN1) == LOW;
+                btn2 = digitalRead(PIN_BTN2) == LOW;
             }
             while(btn1 || btn2);
             delay(150);
@@ -381,11 +381,11 @@ void loop()
             // Flash LEDs
             for (int i = 0; i < 4; i++)
             {
-                digitalWrite(OUT_LED1, 0);
-                digitalWrite(OUT_LED2, 0);
+                digitalWrite(PIN_LED1, 0);
+                digitalWrite(PIN_LED2, 0);
                 delay(100);
-                digitalWrite(OUT_LED1, 255);
-                digitalWrite(OUT_LED2, 255);
+                digitalWrite(PIN_LED1, 255);
+                digitalWrite(PIN_LED2, 255);
                 delay(100);
             }
             
@@ -397,8 +397,8 @@ void loop()
             // Wait for user to release all buttons
             do
             {
-                btn1 = digitalRead(IN_BTN1) == LOW;
-                btn2 = digitalRead(IN_BTN2) == LOW;
+                btn1 = digitalRead(PIN_BTN1) == LOW;
+                btn2 = digitalRead(PIN_BTN2) == LOW;
             }
             while(btn1 || btn2);
             delay(150);
@@ -510,28 +510,28 @@ void loop()
             // When button pressed, the pressed one is constantly lit, the other starts being lit after a second.
             if (btn_down == 1)
             {
-                digitalWrite(OUT_LED1, HIGH);
+                digitalWrite(PIN_LED1, HIGH);
                 
                 if (btn_allow_hold == 0)
                 {
-                    analogWrite(OUT_LED2, constrain((int)round((float)(time - btn1_LastPush - 1000) / 3000.0f * 255.0f), 0, 255));
+                    analogWrite(PIN_LED2, constrain((int)round((float)(time - btn1_LastPush - 1000) / 3000.0f * 255.0f), 0, 255));
                 }
                 else
                 {
-                    digitalWrite(OUT_LED2, btn2_last || btn2_LastPush + 125 > time ? HIGH : LOW);
+                    digitalWrite(PIN_LED2, btn2_last || btn2_LastPush + 125 > time ? HIGH : LOW);
                 }
             }
             else
             {
-                digitalWrite(OUT_LED2, HIGH);
+                digitalWrite(PIN_LED2, HIGH);
                 
                 if (btn_allow_hold == 0)
                 {
-                    analogWrite(OUT_LED1, constrain((int)round((float)(time - btn2_LastPush - 1000) / 3000.0f * 255.0f), 0, 255));
+                    analogWrite(PIN_LED1, constrain((int)round((float)(time - btn2_LastPush - 1000) / 3000.0f * 255.0f), 0, 255));
                 }
                 else
                 {
-                    digitalWrite(OUT_LED1, btn1_last || btn1_LastPush + 125 > time ? HIGH : LOW);
+                    digitalWrite(PIN_LED1, btn1_last || btn1_LastPush + 125 > time ? HIGH : LOW);
                 }
             }
         }
@@ -546,50 +546,50 @@ void loop()
             {
                 case 0: // Equalizer
                 {
-                    analogWrite(OUT_LED1, (prog1_starttime + 125 > time) ? 255 : led_breathe);
-                    digitalWrite(OUT_LED2, LOW);
+                    analogWrite(PIN_LED1, (prog1_starttime + 125 > time) ? 255 : led_breathe);
+                    digitalWrite(PIN_LED2, LOW);
                     break;
                 }
                 case 1: // Beat-detector
                 {
-                    analogWrite(OUT_LED1, (prog1_starttime + 125 > time || tm > 925) ? 255 : led_breathe);
-                    digitalWrite(OUT_LED2, last_beat + 20 > time ? HIGH : LOW);
+                    analogWrite(PIN_LED1, (prog1_starttime + 125 > time || tm > 925) ? 255 : led_breathe);
+                    digitalWrite(PIN_LED2, last_beat + 20 > time ? HIGH : LOW);
                     break;
                 }
                 case 2: // Peak
                 {
-                    analogWrite(OUT_LED1, (prog1_starttime + 125 > time || (775 < tm && tm < 850) || 925 < tm) ? 255 : led_breathe);
-                    digitalWrite(OUT_LED2, pkDetectTime + 125 > time ? HIGH : LOW);
+                    analogWrite(PIN_LED1, (prog1_starttime + 125 > time || (775 < tm && tm < 850) || 925 < tm) ? 255 : led_breathe);
+                    digitalWrite(PIN_LED2, pkDetectTime + 125 > time ? HIGH : LOW);
                     break;
                 }
                 case 100:
                 {
-                    digitalWrite(OUT_LED1, LOW);
-                    analogWrite(OUT_LED2, (prog2_starttime + 125 > time) ? 255 : led_breathe);
+                    digitalWrite(PIN_LED1, LOW);
+                    analogWrite(PIN_LED2, (prog2_starttime + 125 > time) ? 255 : led_breathe);
                     break;
                 }
                 case 101:
                 {
-                    digitalWrite(OUT_LED1, LOW);
-                    analogWrite(OUT_LED2, (prog2_starttime + 125 > time || tm > 925) ? 255 : led_breathe);
+                    digitalWrite(PIN_LED1, LOW);
+                    analogWrite(PIN_LED2, (prog2_starttime + 125 > time || tm > 925) ? 255 : led_breathe);
                     break;
                 }
                 case 102:
                 {
-                    digitalWrite(OUT_LED1, LOW);
-                    analogWrite(OUT_LED2, (prog2_starttime + 125 > time || (775 < tm && tm < 850) || 925 < tm) ? 255 : led_breathe);
+                    digitalWrite(PIN_LED1, LOW);
+                    analogWrite(PIN_LED2, (prog2_starttime + 125 > time || (775 < tm && tm < 850) || 925 < tm) ? 255 : led_breathe);
                     break;
                 }
                 case 103:
                 {
-                    digitalWrite(OUT_LED1, LOW);
-                    analogWrite(OUT_LED2, (prog2_starttime + 125 > time || (625 < tm && tm < 700) || (775 < tm && tm < 850) || 925 < tm) ? 255 : led_breathe);
+                    digitalWrite(PIN_LED1, LOW);
+                    analogWrite(PIN_LED2, (prog2_starttime + 125 > time || (625 < tm && tm < 700) || (775 < tm && tm < 850) || 925 < tm) ? 255 : led_breathe);
                     break;
                 }
                 default:
                 {
-                    analogWrite(OUT_LED1, led_breathe);
-                    analogWrite(OUT_LED2, led_breathe);
+                    analogWrite(PIN_LED1, led_breathe);
+                    analogWrite(PIN_LED2, led_breathe);
                     break;
                 }
             }
@@ -691,7 +691,7 @@ void loop()
             // Average buffer based on potentiometer value
             // (WHAT ABOUT USING LOGARITHMIC CONTROL?)
             //
-            double pot = (double)analogRead(IN_ADJ) / 1023.0d;
+            double pot = (double)analogRead(PIN_ADJ) / 1023.0d;
             double potm = 1.0f - pot;
             
             double b = sin(pot * PI_HALF) * 0.99d;
@@ -843,7 +843,7 @@ void loop()
             if (btn_allow_hold == 0)
             {
                 // Read trigger level from potentiometer
-                float trigger_level = (float)analogRead(IN_ADJ) / 1023.0f * 0.8f + 0.025f;
+                float trigger_level = (float)analogRead(PIN_ADJ) / 1023.0f * 0.8f + 0.025f;
                 
                 // Read values from MSGEQ7
                 readNewValues();
@@ -912,8 +912,8 @@ void loop()
             //
             // Sinus, with custom speed (POT) and color (BTN1)
             //
-            //float sec = (1.0f - log10(10.0f - ((float)analogRead(IN_ADJ) / 1023.0f) * 9.0f)) * 29.92f + 0.08f;
-            float sec = (2.0f - log10(100.0f - ((float)analogRead(IN_ADJ) / 1023.0f) * 99.0f)) * 0.5f * 29.92f + 0.08f;
+            //float sec = (1.0f - log10(10.0f - ((float)analogRead(PIN_ADJ) / 1023.0f) * 9.0f)) * 29.92f + 0.08f;
+            float sec = (2.0f - log10(100.0f - ((float)analogRead(PIN_ADJ) / 1023.0f) * 99.0f)) * 0.5f * 29.92f + 0.08f;
             
             float speed = 1.0f / (128.0f * sec);
             
@@ -932,7 +932,7 @@ void loop()
             // Constant color (POT)
             //
             // Read HUE from potentiometer. Must be in [0, 6[.
-            float analog = (float)analogRead(IN_ADJ) / 1023.0f * 380.0f;
+            float analog = (float)analogRead(PIN_ADJ) / 1023.0f * 380.0f;
             
             if (analog < 370.0f)
             {
@@ -972,10 +972,10 @@ void readNewValues()
     
     for (int ch = 0; ch < 7; ch++)
     {
-        digitalWrite(OUT_EQ_STROBE, LOW);
+        digitalWrite(PIN_EQ_STROBE, LOW);
         delayMicroseconds(30);
-        iChannels[ch] = analogRead(IN_EQ);
-        digitalWrite(OUT_EQ_STROBE, HIGH);
+        iChannels[ch] = analogRead(PIN_EQ_OUT);
+        digitalWrite(PIN_EQ_STROBE, HIGH);
     }
     digitalWrite(PIN_EQ_RESET, LOW);
 }
