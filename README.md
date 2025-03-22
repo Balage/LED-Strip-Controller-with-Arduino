@@ -1,7 +1,7 @@
 # LED Strip Controller with Arduino
 The controller can drive an RGB LED strip which can be up to 25 meters long, using music as input. This can come from any device with a line level output (basically all PCs, mobile phones and Hi-Fi systems). It uses a visual equalizer which separates the audio into 3 channels: low, middle and high frequency, and each of these correspond to a specific color. The device also supports passive modes where no input is needed.
 
-![Watch the video](https://img.youtube.com/vi/10x7A5oeKzk/maxresdefault.jpg)](https://youtu.be/10x7A5oeKzk)
+[![Watch the video](https://img.youtube.com/vi/10x7A5oeKzk/maxresdefault.jpg)](https://youtu.be/10x7A5oeKzk)
 
 The full article is [available here](https://vbstudio.hu/blog/20250322-LED-Strip-Controller-with-Arduino).
 
@@ -12,7 +12,7 @@ For the heart of the controller, I'm using an **Arduino Pro Mini** microcontroll
 
 To preprocess the audio signal into something the microcontroller can work with, I'm using a dedicated chip, the **MSGEQ7 Seven Band Graphic Equalizer**. On its input side, two 20kΩ resistors are used to merge the audio channels from stereo to mono. These large values prevent any audible "monofication" of the sound when you plug the controller in parallel with your speakers. On the output, it generates 7 analog signals that correspond to different frequency bands on the input, which is then digitized and further processed by the microcontroller.
 
-[![Wiring Diagram](led_strip_controller_schematics.png)
+![Wiring Diagram](led_strip_controller_schematics.png)
 
 ## How to install code
 - Download and install the [Arduino IDE](https://www.arduino.cc/en/software).
@@ -46,7 +46,8 @@ Flashing one color in a sine wave. The speed can be set with the potentiometer (
 
 ### Passive Program P3: Adjustable Constant Color
 The color can be set with the potentiometer. The color range is as follows:
-[![The available colors, with white at the end.](p3_hue_bar.png)
+
+![The available colors, with white at the end.](p3_hue_bar.png)
 
 ### Saving Default Program
 You can save the currently selected program as default, as well as the color settings for A2 and P2 programs. To do this, press and hold any of the buttons for 4 seconds. When saving is done, both LEDs will flash 4 times.
